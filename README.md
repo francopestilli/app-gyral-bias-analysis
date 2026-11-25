@@ -1,5 +1,53 @@
 # Gyral Bias Analysis (app-gyral-bias-analysis)
 
+<!-- brainlife-app:begin (generated from the App manifest; edit the manifest, not this block) -->
+
+> **Computes parcel-wise gyral bias metrics by combining FreeSurfer cortical curvature with tractography streamline counts and densities, optionally restricted to visual areas and polar-angle meridians.**
+
+Projects FreeSurfer surface curvature to the volume with mri_surf2vol, computes mean curvature and volume per parcel, counts the streamlines of each parcel's tractogram (track<ID>.tck), optionally keeps only streamlines connecting visual_area_a and visual_area_b, and reports streamline density per parcel with summary plots by meridian. Use it to test whether streamline terminations are biased towards gyral crowns. Needs parc (with label), tcks and the FreeSurfer directory; parc_vareas is required when visual area filtering is requested. Note: input_mode and normalize, and the tractogram and prf inputs, are not read by main.
+
+| | |
+|---|---|
+| 📥 **Inputs** | `neuro/freesurfer` · `neuro/tcks` (optional) · `neuro/parcellation/volume` (optional) ×2 · `neuro/track/tck` (optional) · `neuro/prf` (optional) |
+| 📤 **Outputs** | `neuro/tractmeasures` · `generic/images` |
+| 🐳 **Container** | `gamorosino/tract_align:v1.0` |
+| ⚙️ **Resources** | 1 CPUs · 3 h walltime |
+| 🔑 **Requires** | `FREESURFER_LICENSE` |
+| 🔗 **Run it** | [doi.org/10.25663/brainlife.app.914](https://doi.org/10.25663/brainlife.app.914) |
+
+#### 📥 Inputs
+
+| Input | Datatype | Required | Description |
+|---|---|---|---|
+| `freesurfer` | `neuro/freesurfer` | yes | FreeSurfer recon-all subject directory (curvature and aparc+aseg are used). |
+| `tcks` | `neuro/tcks` | no | Collection of per-parcel tractograms named track<ID>.tck. |
+| `parc_vareas` | `neuro/parcellation/volume` | no | Visual area parcellation (for example Benson14 varea) used to filter streamlines by visual area. |
+| `parc` | `neuro/parcellation/volume` | no | Parcellation whose parcels the metrics are computed for, with its label file. |
+| `tractogram` | `neuro/track/tck` | no |  |
+| `prf` | `neuro/prf` | no |  |
+
+#### 📤 Outputs
+
+| Output | Datatype | Description |
+|---|---|---|
+| `output` | `neuro/tractmeasures` | Table (tractmeasures.csv) of per-parcel curvature, volume, streamline counts and densities. |
+| `plots` | `generic/images` | Summary plots of curvature and streamline density by meridian and eccentricity. |
+
+<details>
+<summary><b>⚙️ Parameters</b> (5)</summary>
+
+| Parameter | Type | Default | Description |
+|---|---|---|---|
+| `visual_area_a` | string | `V1` | First visual area name (for example V1) used to filter streamlines. |
+| `visual_area_b` | string |  | Second visual area name; when set, only streamlines connecting area A and area B are kept. |
+| `meridian_mode` | string | `HM, VM, LVM, UVM` | Which polar-angle meridian groups to compare in the plots (for example HM, VM, LVM, UVM). |
+| `input_mode` | enum | `precomputed_tcks` | Options: `precomputed_tcks`, `whole_tractogram`. |
+| `normalize` | boolean | `false` |  |
+
+</details>
+
+<!-- brainlife-app:end -->
+
 This app computes parcel-wise gyral bias metrics by combining cortical curvature (from FreeSurfer) with tractography-derived streamline counts and densities. Optional filtering allows analysis restricted to specific visual areas and ROI ordering.
 
 ---
